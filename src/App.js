@@ -1,25 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+const express = require('express');
+const mongoose = require('mongoose');
+const skillRoutes = require('./routes/skillRoutes');
+const app = express();
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+// Configure JSON parsing middleware
+app.use(express.json());
 
-export default App;
+// Connect to MongoDB
+mongoose.connect('mongodb://127.0.0.1:27017/skilldb', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('Error connecting to MongoDB:', err));
+
+// Use skill routes
+app.use('/api', skillRoutes);
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
+});
